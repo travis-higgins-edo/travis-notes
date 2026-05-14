@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEC vs. TV Ad Airings: Cross-Brand Comparison Framework</title>
+<style>
+  :root {
+    --edo-blue: #1a4d7c;
+    --edo-accent: #2e8b9a;
+    --edo-orange: #e87722;
+    --edo-bg: #f7f9fb;
+    --edo-card: #ffffff;
+    --edo-border: #e1e6ec;
+    --edo-text: #1f2933;
+    --edo-muted: #5b6770;
+    --edo-good: #2e7d4f;
+    --edo-warn: #b9831f;
+    --edo-bad: #b04848;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--edo-bg);
+    color: var(--edo-text);
+    line-height: 1.55;
+  }
+  header {
+    background: linear-gradient(135deg, var(--edo-blue) 0%, var(--edo-accent) 100%);
+    color: white;
+    padding: 32px 48px 28px;
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 600;
+  }
+  header .subtitle {
+    margin: 0;
+    opacity: 0.92;
+    font-size: 15px;
+  }
+  header .meta {
+    margin-top: 12px;
+    font-size: 13px;
+    opacity: 0.8;
+  }
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 32px 64px;
+  }
+  section {
+    background: var(--edo-card);
+    border: 1px solid var(--edo-border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  section h2 {
+    margin-top: 0;
+    color: var(--edo-blue);
+    font-size: 20px;
+    border-bottom: 2px solid var(--edo-border);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+  section h3 {
+    color: var(--edo-blue);
+    font-size: 16px;
+    margin-top: 22px;
+    margin-bottom: 8px;
+  }
+  section h4 {
+    color: var(--edo-text);
+    font-size: 14px;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--edo-muted);
+  }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 22px; }
+  li { margin-bottom: 4px; }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    background: #eef2f6;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #243b53;
+  }
+  pre {
+    background: #1f2933;
+    color: #f0f4f8;
+    padding: 14px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--edo-border);
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: #eef2f6;
+    color: var(--edo-blue);
+    font-weight: 600;
+  }
+  tr:nth-child(even) td { background: #fafbfc; }
+
+  .callout {
+    border-left: 4px solid var(--edo-accent);
+    background: #f0f7f9;
+    padding: 12px 16px;
+    margin: 14px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .callout.warn {
+    border-left-color: var(--edo-warn);
+    background: #fdf6e8;
+  }
+  .callout.bad {
+    border-left-color: var(--edo-bad);
+    background: #fbeded;
+  }
+  .callout.good {
+    border-left-color: var(--edo-good);
+    background: #ecf5ef;
+  }
+  .callout strong { color: var(--edo-blue); }
+
+  .option-card {
+    border: 1px solid var(--edo-border);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 14px 0;
+    background: #fbfcfd;
+  }
+  .option-card h3 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 11px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .badge.effort-low { background: #d6efdd; color: #2e7d4f; }
+  .badge.effort-med { background: #fdecd3; color: #b9831f; }
+  .badge.effort-high { background: #fbdada; color: #b04848; }
+  .badge.recommended { background: var(--edo-orange); color: white; }
+
+  .formula {
+    background: #f5f7fa;
+    border-left: 3px solid var(--edo-accent);
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    color: #243b53;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 14px 0;
+  }
+  .compare-grid .col {
+    border: 1px solid var(--edo-border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    background: #fbfcfd;
+  }
+  .compare-grid .col h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .toc {
+    background: #f0f4f8;
+    border: 1px solid var(--edo-border);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .toc h3 {
+    margin-top: 0;
+    color: var(--edo-blue);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .toc ol { margin: 8px 0 0; padding-left: 22px; }
+  .toc a {
+    color: var(--edo-blue);
+    text-decoration: none;
+  }
+  .toc a:hover { text-decoration: underline; }
+
+  .decision-flow {
+    margin: 14px 0;
+  }
+  .flow-node {
+    border: 1px solid var(--edo-border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    background: #fbfcfd;
+    margin-bottom: 8px;
+  }
+  .flow-node.root {
+    background: var(--edo-blue);
+    color: white;
+    border-color: var(--edo-blue);
+    font-weight: 600;
+  }
+  .flow-node.decision {
+    background: #eef2f6;
+    border-color: var(--edo-accent);
+    font-weight: 600;
+    color: var(--edo-blue);
+  }
+  .flow-node.outcome-good {
+    border-left: 4px solid var(--edo-good);
+    background: #ecf5ef;
+  }
+  .flow-node.outcome-warn {
+    border-left: 4px solid var(--edo-warn);
+    background: #fdf6e8;
+  }
+  .flow-node .label {
+    display: inline-block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .flow-node.outcome-good .label { background: var(--edo-good); color: white; }
+  .flow-node.outcome-warn .label { background: var(--edo-warn); color: white; }
+  .flow-node .body {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-top: 6px;
+  }
+  .flow-node .quote {
+    display: block;
+    font-style: italic;
+    color: var(--edo-muted);
+    background: white;
+    border-left: 3px solid var(--edo-border);
+    padding: 8px 12px;
+    margin-top: 8px;
+    border-radius: 0 4px 4px 0;
+    font-size: 13px;
+  }
+  .flow-branch {
+    margin-left: 28px;
+    padding-left: 20px;
+    border-left: 2px dashed var(--edo-border);
+    position: relative;
+  }
+  .flow-branch::before {
+    content: "";
+    position: absolute;
+    left: -2px;
+    top: 0;
+    height: 18px;
+    width: 18px;
+    border-left: 2px dashed var(--edo-border);
+    border-bottom: 2px dashed var(--edo-border);
+    border-bottom-left-radius: 6px;
+  }
+  .flow-arrow {
+    color: var(--edo-muted);
+    text-align: center;
+    font-size: 18px;
+    line-height: 1;
+    margin: 2px 0 6px;
+  }
+
+  .tier-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr 90px;
+    gap: 0;
+    border: 1px solid var(--edo-border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .tier-row > div { padding: 12px 14px; }
+  .tier-row .tier-num {
+    background: var(--edo-blue);
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .tier-row .tier-validity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .tier-row.valid .tier-validity { background: #d6efdd; color: var(--edo-good); }
+  .tier-row.cond .tier-validity { background: #fdecd3; color: var(--edo-warn); }
+  .tier-row.invalid .tier-validity { background: #fbdada; color: var(--edo-bad); }
+
+  footer {
+    text-align: center;
+    color: var(--edo-muted);
+    font-size: 12px;
+    margin-top: 32px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AEC vs. TV Ad Airings: Cross-Brand Comparison Framework</h1>
+  <p class="subtitle">Why methodologies differ, options for closing the gap, and how to safely build a chat agent on top</p>
+  <p class="meta">Internal Briefing &middot; EDO Data Platform</p>
+</header>
+
+<main>
+
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#background">Background &amp; The Core Question</a></li>
+      <li><a href="#methodology">Methodology Differences: AEC vs. TV Ad Airings</a></li>
+      <li><a href="#options">Four Options for Cross-Brand AEC Comparison</a></li>
+      <li><a href="#dimensions">The Cross-Dimension Problem</a></li>
+      <li><a href="#tiers">Three Tiers of Comparison Validity</a></li>
+      <li><a href="#agent">Chat Agent Design Recommendations</a></li>
+      <li><a href="#summary">Summary &amp; Next Steps</a></li>
+    </ol>
+  </div>
+
+  <!-- ============================================ -->
+  <section id="background">
+    <h2>1. Background &amp; The Core Question</h2>
+    <p>
+      EDO produces engagement lift metrics through two distinct pipelines:
+    </p>
+    <ul>
+      <li><strong>AEC</strong> &mdash; primarily Vizio spine, 1:1 household-level exposure data, run through the CMPDS scoring model.</li>
+      <li><strong>TV Ad Airings (Spike-based / Linear)</strong> &mdash; Google Trends-derived search engagement spikes attributable to individual TV ad airings.</li>
+    </ul>
+    <p>
+      In existing client reports, TV Ad Airings metrics are routinely compared <em>across brands</em>, while AEC metrics are kept within a brand or rely on specific brand-normalized index metrics. As we develop a chat agent on top of these data sources &mdash; one we cannot tightly control the way we control PDF reports &mdash; we need to understand <strong>why</strong> the comparison rules differ and what it would take to safely allow cross-brand AEC comparisons.
+    </p>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="methodology">
+    <h2>2. Methodology Differences: Why Cross-Brand Works in One But Not the Other</h2>
+
+    <div class="compare-grid">
+      <div class="col">
+        <h4>TV Ad Airings (Spike-based)</h4>
+        <p><strong>Primary metric:</strong> SEV (Search Engagement Volume)</p>
+        <div class="formula">SEV = added_traction / sev_impressions_factor</div>
+        <p><strong>Normalization is baked in at the per-airing level</strong> via four factors computed across all airings in a normalization group:</p>
+        <ul>
+          <li><code>duration_factor</code> &mdash; ad length</li>
+          <li><code>entity_factor</code> &mdash; brand baseline search volume</li>
+          <li><code>impressions_factor</code> &mdash; audience reach</li>
+          <li><code>network_hour_factor</code> &mdash; daypart / network</li>
+        </ul>
+        <p>The <code>entity_factor</code> is the key &mdash; it divides out brand-level baseline differences <em>before</em> aggregation. Cross-brand SER comparisons are therefore valid at the data layer.</p>
+      </div>
+      <div class="col">
+        <h4>AEC (Vizio 1:1)</h4>
+        <p><strong>Primary metric:</strong> LIFT (Ad-Driven Engagement Rate)</p>
+        <div class="formula">LIFT = sum(lift &times; weight) / sum(weight)</div>
+        <p><strong>Raw LIFT is not entity-normalized.</strong> It is the direct output of the CMPDS scoring model and inherently carries each brand's baseline scale (brand propensity, conversion probability, search volume).</p>
+        <p>Comparing Coca-Cola's LIFT to a niche brand's LIFT is comparing apples to oranges &mdash; each brand has a fundamentally different denominator.</p>
+        <p>Reports therefore derive an entity-normalized index <em>after the fact</em>:</p>
+        <div class="formula">brand_normalized_eri = lift / overall_brand_lift &times; 100</div>
+        <p>Each brand is re-based to a 100-point scale relative to its own overall performance.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Core insight:</strong> In TV Ad Airings, brand normalization is a <em>continuous statistical adjustment</em> applied at the per-airing level. In AEC, no equivalent per-exposure entity factor exists in the raw data &mdash; the reporting layer must construct an index after aggregation. This is why the rules for safe comparison differ.
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="options">
+    <h2>3. Four Options for Cross-Brand AEC Comparison</h2>
+    <p>Ranked from lowest effort / fastest to ship to highest effort / strongest parity with the TV Ad Airings model.</p>
+
+    <div class="option-card">
+      <h3>
+        Option 1: Surface Existing Entity-Normalized Metrics as the Default
+        <span class="badge effort-low">Low Effort</span>
+        <span class="badge recommended">Ship First</span>
+      </h3>
+      <p>The infrastructure already exists. <code>brand_normalized_eri</code> is computed in the VeraMax query layer and feeds the category-level indices used in existing reports.</p>
+      <p><strong>What to do:</strong> In the chat agent, detect cross-brand intent and route to <code>SUBJECT_AD_DRIVEN_ENGAGEMENT_RATE_ENTITY_NORMALIZED_INDEX</code> (and its category / display-index variants) instead of raw LIFT. Always caveat: <em>"100 = each brand's own average; values above 100 mean above-average performance for that brand."</em></p>
+      <p><strong>Limitation:</strong> Compares <em>relative patterns</em>, not <em>absolute magnitudes</em>. You can say "Brand A over-indexes on Hulu more than Brand B does" but not "Brand A drives more engagement than Brand B."</p>
+    </div>
+
+    <div class="option-card">
+      <h3>
+        Option 2: Cross-Brand Absolute Engagement Rate Index
+        <span class="badge effort-med">Moderate Effort</span>
+      </h3>
+      <p>Build a new metric that directly answers <em>"Which brand drives more engagement?"</em>:</p>
+      <div class="formula">Brand Absolute Index = brand_overall_lift / weighted_avg(all_brands_overall_lift_in_compset) &times; 100</div>
+      <p>Scaffolding for this already exists in the metrics spec under <code>SUBJECT_AD_DRIVEN_BRAND_ENGAGEMENT_RATE</code> and <code>SUBJECT_AD_DRIVEN_BRAND_ENGAGEMENT_RATE_INDEX</code>.</p>
+      <p><strong>What to do:</strong> Add one CTE to the VeraMax query chain that computes the weighted average of <code>overall_brand_lift</code> across the competitive set, then divides each brand's value by it.</p>
+      <p><strong>Advantage:</strong> Direct cross-brand comparable index, conceptually parallel to how <code>entity_factor</code> works in TV Ad Airings. Combined with Option 1, you can produce a dimension-specific cross-brand index by multiplication.</p>
+    </div>
+
+    <div class="option-card">
+      <h3>
+        Option 3: Compute an AEC-Native Entity Factor in CMPDS
+        <span class="badge effort-high">High Effort</span>
+      </h3>
+      <p>Mirror the TV Ad Airings architecture by exporting an entity-normalized lift column from the CMPDS pipeline into the RRD tables:</p>
+      <div class="formula">ENTITY_NORMALIZED_LIFT = NEW_LIFT / overall_brand_lift</div>
+      <p>The pipeline already computes <code>BRAND_MULT</code> and <code>LIFT_RATIO</code> internally for model calibration; this would expose an analogous divisible factor in the output schema.</p>
+      <p><strong>Advantage:</strong> True data-layer parity with TV Ad Airings. The chat agent and any downstream consumer can compare across brands without special routing logic.</p>
+      <p><strong>Cost:</strong> Requires CMPDS pipeline changes, RRD schema migration, and downstream query updates. Long-term ideal, not a quick win.</p>
+    </div>
+
+    <div class="option-card">
+      <h3>
+        Option 4: Chat Agent Guardrails (Complementary to Any Above)
+        <span class="badge effort-low">Low Effort</span>
+        <span class="badge recommended">Required</span>
+      </h3>
+      <p>Regardless of metric strategy, the chat agent needs a guardrail layer that:</p>
+      <ol>
+        <li><strong>Detects comparison intent</strong> &mdash; "compare X vs Y" routes to a cross-brand pathway.</li>
+        <li><strong>Auto-selects the right metric</strong> &mdash; raw LIFT for within-brand questions, entity-normalized index for cross-brand.</li>
+        <li><strong>Always caveats</strong> &mdash; surfaces the competitive set, the normalization approach, and what "100" means.</li>
+        <li><strong>Refuses unsafe comparisons</strong> &mdash; if brands are not in the same competitive set / scoring run, refuse rather than produce a misleading number.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="dimensions">
+    <h2>4. The Cross-Dimension Problem</h2>
+    <p>
+      Cross-brand comparison is one problem. <strong>Cross-dimension comparison is a separate, second problem</strong> that none of the metric options above directly solve.
+    </p>
+
+    <h3>Worked Example</h3>
+    <div class="callout warn">
+      <strong>User asks:</strong> Compare GEICO on streaming/Amazon vs. ALLSTATE on streaming/Amazon/Monday.
+      <br><br>
+      GEICO has 2 dimensional filters applied. ALLSTATE has 3. You are comparing a <em>broader slice</em> of GEICO data against a <em>narrower slice</em> of ALLSTATE data. The denominators of any normalized index will be different, and the comparison is structurally invalid &mdash; like comparing a weekly batting average to a monthly one.
+    </div>
+
+    <h3>Why the Query Architecture Cannot Mix Dimensions</h3>
+    <p>
+      The VeraMax query layer parameterizes every query by a single <code>group_columns</code> array (e.g., <code>['BRAND', 'PLATFORM', 'PUBLISHER_1P']</code>) applied uniformly to all brands in the competitive set. There is no mechanism to ask for one brand at one dimensional cut and another brand at a different cut in the same query.
+    </p>
+    <p>
+      In TV Ad Airings this problem barely surfaces because each airing is an atomic unit &mdash; one airing, one brand, one network, one time &mdash; and normalization factors apply at that atomic level. In AEC, the RRD tables are <strong>pre-aggregated by dimension group</strong>, so two rows with different <code>group_columns</code> arrays represent fundamentally different aggregation scopes.
+    </p>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="tiers">
+    <h2>5. Three Tiers of Comparison Validity</h2>
+    <p>This is the framework the chat agent should reason about for every comparison request:</p>
+
+    <div class="tier-row valid">
+      <div class="tier-num">1</div>
+      <div>
+        <strong>Same brand, same dimensions</strong>
+        <div style="font-size:13px;color:var(--edo-muted);margin-top:4px;">Example: GEICO streaming/Amazon vs. GEICO streaming/Hulu</div>
+      </div>
+      <div>
+        <strong>Metric:</strong> Raw LIFT or Engagement Rate Index<br>
+        <span style="font-size:13px;color:var(--edo-muted);">No normalization needed.</span>
+      </div>
+      <div class="tier-validity">Valid</div>
+    </div>
+
+    <div class="tier-row cond">
+      <div class="tier-num">2</div>
+      <div>
+        <strong>Cross-brand, same dimensions</strong>
+        <div style="font-size:13px;color:var(--edo-muted);margin-top:4px;">Example: GEICO streaming/Amazon vs. ALLSTATE streaming/Amazon</div>
+      </div>
+      <div>
+        <strong>Metric:</strong> Entity-normalized index (Option 1) or Cross-Brand Absolute Index (Option 2)<br>
+        <span style="font-size:13px;color:var(--edo-muted);">Comparison valid <em>with</em> normalization.</span>
+      </div>
+      <div class="tier-validity">Valid w/ Norm</div>
+    </div>
+
+    <div class="tier-row invalid">
+      <div class="tier-num">3</div>
+      <div>
+        <strong>Cross-brand, different dimensions</strong>
+        <div style="font-size:13px;color:var(--edo-muted);margin-top:4px;">Example: GEICO streaming/Amazon vs. ALLSTATE streaming/Amazon/Monday</div>
+      </div>
+      <div>
+        <strong>Metric:</strong> No single metric saves this.<br>
+        <span style="font-size:13px;color:var(--edo-muted);">Must align dimensions or decompose into independent statements.</span>
+      </div>
+      <div class="tier-validity">Invalid</div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="agent">
+    <h2>6. Chat Agent Design Recommendations</h2>
+
+    <h3>Decision Flow</h3>
+    <div class="decision-flow">
+
+      <div class="flow-node root">
+        User asks a cross-brand comparison question
+      </div>
+      <div class="flow-arrow">&darr;</div>
+
+      <div class="flow-node decision">
+        Do both brands use the same dimensional cut?
+      </div>
+
+      <!-- YES branch -->
+      <div class="flow-branch">
+        <div class="flow-node outcome-good">
+          <span class="label">Yes</span>
+          <strong>Use entity-normalized index</strong> (Option 1 or Option 2)
+          <div class="body">
+            Direct comparison is valid. Always caveat: <em>100 = each brand's own average.</em>
+          </div>
+        </div>
+      </div>
+
+      <!-- NO branch -->
+      <div class="flow-branch">
+        <div class="flow-node outcome-warn">
+          <span class="label">No</span>
+          <strong>Mismatched dimensions &mdash; do not produce a direct comparison</strong>
+          <div class="body">Choose one of two paths:</div>
+        </div>
+
+        <div class="flow-branch">
+          <div class="flow-node outcome-good">
+            <span class="label">Path A &middot; Preferred</span>
+            <strong>Align dimensions</strong>
+            <div class="body">
+              Ask the user which cut to use, then re-run both brands at the same dimensions.
+              <span class="quote">
+                "I'll compare both brands at the same cut. Should I use the broader cut [streaming &middot; Amazon], or apply the Monday filter to GEICO as well?"
+              </span>
+            </div>
+          </div>
+
+          <div class="flow-node outcome-warn">
+            <span class="label">Path B &middot; Fallback</span>
+            <strong>Decompose into independent statements</strong>
+            <div class="body">
+              Present each brand's result on its own terms with an explicit non-comparability disclaimer.
+              <span class="quote">
+                GEICO on streaming/Amazon: <strong>+15%</strong> vs. its campaign average.<br>
+                ALLSTATE on streaming/Amazon/Monday: <strong>&minus;8%</strong> vs. its campaign average.<br>
+                <span style="color:var(--edo-bad);">Note: these use different dimensional cuts and are not directly comparable.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3>Required Behaviors</h3>
+    <ul>
+      <li><strong>Intent detection:</strong> Classify every metric request as within-brand, cross-brand-aligned, or cross-brand-mismatched.</li>
+      <li><strong>Dimension alignment check:</strong> Before producing a cross-brand number, verify both sides use the same <code>group_columns</code>. If not, prompt to align.</li>
+      <li><strong>Mandatory caveats:</strong> Cross-brand outputs always include the competitive set definition, the normalization basis, and the meaning of "100".</li>
+      <li><strong>Refusal mode:</strong> When brands are in different scoring runs, different competitive sets, or different time windows, refuse the comparison rather than produce a misleading number.</li>
+      <li><strong>Telemetry:</strong> Log every comparison with its tier classification so we can audit how the agent handles edge cases in production.</li>
+    </ul>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="summary">
+    <h2>7. Summary &amp; Recommended Next Steps</h2>
+
+    <h3>What We're Solving</h3>
+    <p>Move from tightly-controlled PDF reports (where brand normalization was implicit in report design) to a chat agent that produces correct, comparable answers without human pre-flight checks.</p>
+
+    <h3>Recommended Path</h3>
+    <ol>
+      <li><strong>Ship Option 1 + Option 4 immediately.</strong> Use the existing entity-normalized indices and wrap them with chat agent guardrails. This unblocks Tier-2 comparisons today with no data layer changes.</li>
+      <li><strong>Build Option 2 next.</strong> Add a Cross-Brand Absolute Index CTE to VeraMax. This gives clients the "which brand wins" answer they actually want.</li>
+      <li><strong>Plan Option 3 as the long-term ideal.</strong> An AEC-native entity factor would give true data-layer parity with TV Ad Airings, but requires CMPDS pipeline and RRD schema work.</li>
+      <li><strong>Treat the cross-dimension problem as a query-alignment problem, not a metric problem.</strong> No new metric solves Tier 3; the chat agent must enforce dimensional alignment or decompose the answer.</li>
+    </ol>
+
+    <div class="callout good">
+      <strong>Bottom line:</strong> Options 1 and 2 unblock cross-brand comparisons at the same dimensional cut. For mismatched dimensions, the answer is not a new metric &mdash; it is query alignment enforced by the chat agent. Option 4 (guardrails) is non-negotiable regardless of which metric path we choose.
+    </div>
+  </section>
+
+  <footer>
+    Internal briefing &middot; AEC vs. TV Ad Airings cross-brand comparison framework
+  </footer>
+
+</main>
+
+</body>
+</html>
