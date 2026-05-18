@@ -412,11 +412,17 @@
         <p>Reports therefore derive an entity-normalized index <em>after the fact</em>:</p>
         <div class="formula">brand_normalized_eri = lift / overall_brand_lift &times; 100</div>
         <p>Each brand is re-based to a 100-point scale relative to its own overall performance.</p>
+        <p><strong>Note on stitched AEC outputs:</strong> For AEC data processed through the stitching pipeline, cross-brand normalization does exist at the data layer. The <code>CompetitiveStitcher</code> calibrates each brand's lift against SPIKE's <code>brand_creative_er</code> and then produces:</p>
+        <ul>
+          <li><code>competitive_eri</code> &mdash; brand's adjusted stitched lift indexed against the category weighted average (cross-brand comparable)</li>
+          <li><code>brand_eri</code> &mdash; brand's adjusted stitched lift indexed against its own brand-level stitched lift</li>
+        </ul>
+        <p>These are analogous to SPIKE's <code>entity_factor</code> normalization, but applied post-hoc via the stitch ratio rather than at the per-exposure level. The distinction is that raw AEC LIFT (pre-stitching) remains non-comparable across brands.</p>
       </div>
     </div>
 
     <div class="callout">
-      <strong>Core insight:</strong> In TV Ad Airings, brand normalization is a <em>continuous statistical adjustment</em> applied at the per-airing level. In AEC, no equivalent per-exposure entity factor exists in the raw data &mdash; the reporting layer must construct an index after aggregation. This is why the rules for safe comparison differ.
+      <strong>Core insight:</strong> In TV Ad Airings, brand normalization is a <em>continuous statistical adjustment</em> applied at the per-airing level. In <em>raw</em> AEC, no equivalent per-exposure entity factor exists &mdash; the reporting layer must construct an index after aggregation. However, the stitching pipeline's <code>competitive_eri</code> output does provide cross-brand normalization at the data layer for stitched AEC data. The key distinction is <strong>raw vs. stitched</strong>: comparison rules differ depending on which AEC metric is being used.
     </div>
   </section>
 
@@ -446,6 +452,9 @@
       <p>Scaffolding for this already exists in the metrics spec under <code>SUBJECT_AD_DRIVEN_BRAND_ENGAGEMENT_RATE</code> and <code>SUBJECT_AD_DRIVEN_BRAND_ENGAGEMENT_RATE_INDEX</code>.</p>
       <p><strong>What to do:</strong> Add one CTE to the VeraMax query chain that computes the weighted average of <code>overall_brand_lift</code> across the competitive set, then divides each brand's value by it.</p>
       <p><strong>Advantage:</strong> Direct cross-brand comparable index, conceptually parallel to how <code>entity_factor</code> works in TV Ad Airings. Combined with Option 1, you can produce a dimension-specific cross-brand index by multiplication.</p>
+      <div class="callout warn">
+        <strong>Check before building:</strong> The stitching pipeline already computes <code>competitive_eri</code> &mdash; a category-weighted cross-brand index derived from stitched AEC lift. Before investing in new CTE work, verify whether <code>competitive_eri</code> is already surfaced in the VeraMax/RRD query layer. If it is, Option 2 may reduce to a routing problem (low effort) rather than new metric work.
+      </div>
     </div>
 
     <div class="option-card">
@@ -628,7 +637,7 @@
     <h3>Recommended Path</h3>
     <ol>
       <li><strong>Ship Option 1 + Option 4 immediately.</strong> Use the existing entity-normalized indices and wrap them with chat agent guardrails. This unblocks Tier-2 comparisons today with no data layer changes.</li>
-      <li><strong>Build Option 2 next.</strong> Add a Cross-Brand Absolute Index CTE to VeraMax. This gives clients the "which brand wins" answer they actually want.</li>
+      <li><strong>Audit stitching outputs before building Option 2.</strong> The stitching pipeline already produces <code>competitive_eri</code> (brand lift indexed against the category weighted average). Confirm whether this is already surfaced in VeraMax. If yes, Option 2 is a routing change, not new metric work. If no, add the Cross-Brand Absolute Index CTE to VeraMax.</li>
       <li><strong>Plan Option 3 as the long-term ideal.</strong> An AEC-native entity factor would give true data-layer parity with TV Ad Airings, but requires CMPDS pipeline and RRD schema work.</li>
       <li><strong>Treat the cross-dimension problem as a query-alignment problem, not a metric problem.</strong> No new metric solves Tier 3; the chat agent must enforce dimensional alignment or decompose the answer.</li>
     </ol>
